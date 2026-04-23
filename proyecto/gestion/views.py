@@ -1,31 +1,43 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, DeleteView
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from .models import Libro
-from .forms import LibroForm
+from django.views.generic import DeleteView, ListView
 
-# Listar todos los libros
+from .forms import LibroForm
+from .models import Libro
+
+
+def libro_create(request):
+    if request.method == 'POST':
+        form = LibroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Libro creado exitosamente.')
+            return redirect('libro-list')
+    else:
+        form = LibroForm()
+
+    return render(request, 'gestion/libro_form.html', {'form': form})
+
+
+def libro_detail(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)
+    return render(request, 'gestion/libro_detail.html', {'libro': libro})
+
+
 class LibroListView(ListView):
     model = Libro
     template_name = 'gestion/libro_list.html'
     context_object_name = 'libros'
-    paginate_by = 10
+    paginate_by = 5
 
-# Ver detalles de un libro
-class LibroDetailView(DetailView):
-    model = Libro
-    template_name = 'gestion/libro_detail.html'
-    context_object_name = 'libro'
 
-# Crear un nuevo libro
-class LibroCreateView(CreateView):
-    model = Libro
-    form_class = LibroForm
-    template_name = 'gestion/libro_form.html'
-    success_url = reverse_lazy('libro-list')
-
-# Eliminar un libro
 class LibroDeleteView(DeleteView):
     model = Libro
     template_name = 'gestion/libro_confirm_delete.html'
+    context_object_name = 'libro'
     success_url = reverse_lazy('libro-list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Libro eliminado exitosamente.')
+        return super().delete(request, *args, **kwargs)
