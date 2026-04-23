@@ -1,27 +1,238 @@
 {% extends 'gestion/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="text-center mb-5">
-            <h1 class="display-5">Gestion de libros</h1>
-            <p class="lead text-muted">Accesos principales para probar las vistas del proyecto.</p>
-        </div>
+<style>
+    .home-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <div class="d-grid gap-3">
-                    <a href="{% url 'lista_libros' %}" class="btn btn-outline-primary btn-lg">Lista de libros</a>
-                    <a href="{% url 'libro-create' %}" class="btn btn-outline-primary btn-lg">Crear libro</a>
-                    <a href="{% url 'actualizar_libro' 1 %}" class="btn btn-outline-primary btn-lg">Actualizar libro (id 1)</a>
-                    <a href="{% url 'eliminar_libro' 1 %}" class="btn btn-outline-danger btn-lg">Eliminar libro (id 1)</a>
-                </div>
+    .home-hero {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 2.5rem;
+        align-items: center;
+        padding: 3rem;
+        border-radius: 32px;
+        background:
+            radial-gradient(circle at top right, rgba(13, 110, 253, 0.16), transparent 28%),
+            linear-gradient(135deg, #ffffff 0%, #eef9f2 100%);
+        box-shadow: 0 22px 48px rgba(21, 47, 31, 0.10);
+    }
+
+    .home-hero::after {
+        content: "";
+        position: absolute;
+        right: -80px;
+        bottom: -90px;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background: rgba(25, 135, 84, 0.10);
+    }
+
+    .home-copy {
+        position: relative;
+        z-index: 1;
+    }
+
+    .home-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        background: #ddf4e6;
+        color: #146c43;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .home-copy h1 {
+        font-size: clamp(2.5rem, 4vw, 4.5rem);
+        line-height: 1.04;
+        font-weight: 800;
+        max-width: 10ch;
+        margin-bottom: 1rem;
+    }
+
+    .home-copy p {
+        font-size: 1.08rem;
+        color: var(--text-muted);
+        max-width: 560px;
+        margin-bottom: 1.6rem;
+    }
+
+    .home-actions {
+        display: flex;
+        gap: 0.9rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 54px;
+        padding: 0 1.3rem;
+        border-radius: 999px;
+        border: 1px solid rgba(13, 110, 253, 0.14);
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--accent-blue);
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 10px 22px rgba(21, 47, 31, 0.06);
+    }
+
+    .btn-ghost:hover {
+        color: var(--accent-blue);
+        border-color: rgba(13, 110, 253, 0.28);
+        background: #ffffff;
+    }
+
+    .home-visual {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .home-image-card {
+        width: min(100%, 420px);
+        padding: 1rem;
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(233, 246, 237, 0.92));
+        box-shadow: 0 20px 44px rgba(21, 47, 31, 0.16);
+    }
+
+    .home-image-card img {
+        width: 100%;
+        height: 440px;
+        object-fit: cover;
+        display: block;
+        border-radius: 22px;
+    }
+
+    .home-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .feature-card {
+        padding: 1.4rem;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 16px 36px rgba(21, 47, 31, 0.08);
+        border: 1px solid rgba(25, 135, 84, 0.08);
+    }
+
+    .feature-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+    }
+
+    .feature-card p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.96rem;
+    }
+
+    .feature-card a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .home-note {
+        padding: 1rem 1.2rem;
+        border-radius: 20px;
+        background: rgba(255, 248, 214, 0.72);
+        border: 1px solid rgba(247, 193, 55, 0.22);
+        color: #71560a;
+    }
+
+    @media (max-width: 991px) {
+        .home-hero {
+            grid-template-columns: 1fr;
+            padding: 2rem;
+        }
+
+        .home-image-card img {
+            height: 320px;
+        }
+
+        .home-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 575px) {
+        .home-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="home-layout">
+    <section class="home-hero">
+        <div class="home-copy">
+            <span class="home-chip">Portal principal</span>
+            <h1>Encuentra el libro que estas buscando facilmente</h1>
+            <p>
+                Ingresa al catalogo, crea nuevos registros y accede a las acciones principales
+                desde una portada mas clara, moderna y agradable visualmente.
+            </p>
+
+            <div class="home-actions">
+                <a href="{% url 'lista_libros' %}" class="btn btn-accent">Ver catalogo</a>
+                <a href="{% url 'libro-create' %}" class="btn-ghost">Crear libro</a>
             </div>
         </div>
 
-        <div class="alert alert-warning mt-4" role="alert">
-            Si el libro con id 1 no existe, primero crea uno desde cualquiera de las opciones de crear.
+        <div class="home-visual">
+            <div class="home-image-card">
+                <img src="/public/logo.jpeg" alt="Coleccion de libros">
+            </div>
         </div>
+    </section>
+
+    <section class="home-grid">
+        <article class="feature-card">
+            <a href="{% url 'lista_libros' %}">
+                <h3>Lista de libros</h3>
+                <p>Consulta todos los libros registrados desde una vista organizada y facil de navegar.</p>
+            </a>
+        </article>
+
+        <article class="feature-card">
+            <a href="{% url 'libro-create' %}">
+                <h3>Crear libro</h3>
+                <p>Registra nuevos libros en el sistema usando el formulario principal del proyecto.</p>
+            </a>
+        </article>
+
+        <article class="feature-card">
+            <a href="{% url 'actualizar_libro' 1 %}">
+                <h3>Actualizar libro</h3>
+                <p>Accede a la vista de actualizacion para editar un registro existente.</p>
+            </a>
+        </article>
+
+        <article class="feature-card">
+            <a href="{% url 'eliminar_libro' 1 %}">
+                <h3>Eliminar libro</h3>
+                <p>Prueba la confirmacion de eliminacion sin mostrar detalles tecnicos en el inicio.</p>
+            </a>
+        </article>
+    </section>
+
+    <div class="home-note">
+        Si aun no existe un primer libro registrado, crea uno desde la opcion de crear y luego podras probar actualizar o eliminar.
     </div>
 </div>
 {% endblock %}
