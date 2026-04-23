@@ -1,0 +1,27 @@
+{% extends 'gestion/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-5">
+            <h1 class="display-5">Gestion de libros</h1>
+            <p class="lead text-muted">Accesos principales para probar las vistas del proyecto.</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-grid gap-3">
+                    <a href="{% url 'lista_libros' %}" class="btn btn-outline-primary btn-lg">Lista de libros</a>
+                    <a href="{% url 'libro-create' %}" class="btn btn-outline-primary btn-lg">Crear libro</a>
+                    <a href="{% url 'actualizar_libro' 1 %}" class="btn btn-outline-primary btn-lg">Actualizar libro (id 1)</a>
+                    <a href="{% url 'eliminar_libro' 1 %}" class="btn btn-outline-danger btn-lg">Eliminar libro (id 1)</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-4" role="alert">
+            Si el libro con id 1 no existe, primero crea uno desde cualquiera de las opciones de crear.
+        </div>
+    </div>
+</div>
+{% endblock %}

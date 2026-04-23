@@ -1,0 +1,25 @@
+{% extends 'gestion/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">Clase generica: UpdateView</h2>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Actualiza los datos del libro seleccionado.</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">Guardar cambios</button>
+                        <a href="{% url 'lista_libros' %}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
