@@ -1,4 +1,5 @@
 import os
+import tempfile
 import urllib.parse
 from pathlib import Path
 
@@ -102,7 +103,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': (Path(tempfile.gettempdir()) / 'db.sqlite3') if IS_VERCEL else BASE_DIR / 'db.sqlite3',
         }
     }
 
