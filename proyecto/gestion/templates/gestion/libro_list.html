@@ -1,79 +1,361 @@
 {% extends 'gestion/base.html' %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-8">
-        <h1>Libros</h1>
+<style>
+    .landing-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .hero-books {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.15fr 0.95fr;
+        gap: 2.5rem;
+        align-items: center;
+        padding: 3rem;
+        border-radius: 32px;
+        background:
+            radial-gradient(circle at top right, rgba(46, 173, 110, 0.24), transparent 28%),
+            linear-gradient(135deg, #ffffff 0%, #eef9f2 100%);
+        box-shadow: 0 22px 48px rgba(21, 47, 31, 0.10);
+    }
+
+    .hero-books::after {
+        content: "";
+        position: absolute;
+        right: -70px;
+        bottom: -90px;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: rgba(13, 110, 253, 0.08);
+    }
+
+    .hero-copy {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        background: #ddf4e6;
+        color: #146c43;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .hero-copy h1 {
+        font-size: clamp(2.4rem, 4vw, 4.4rem);
+        line-height: 1.05;
+        font-weight: 800;
+        max-width: 10ch;
+        margin-bottom: 1rem;
+    }
+
+    .hero-copy p {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        max-width: 540px;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-search {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-search input {
+        flex: 1 1 260px;
+        min-height: 58px;
+        padding: 0 1.2rem;
+        border: 1px solid rgba(25, 135, 84, 0.16);
+        border-radius: 999px;
+        background: #fff;
+        box-shadow: inset 0 1px 2px rgba(21, 47, 31, 0.04);
+    }
+
+    .hero-search button {
+        min-height: 58px;
+        padding: 0 1.5rem;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent-blue), #3d8bfd);
+        color: #fff;
+        font-weight: 700;
+        box-shadow: 0 12px 24px rgba(13, 110, 253, 0.20);
+    }
+
+    .hero-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-stat {
+        min-width: 150px;
+        padding: 0.95rem 1rem;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(25, 135, 84, 0.10);
+        box-shadow: 0 10px 24px rgba(21, 47, 31, 0.06);
+    }
+
+    .hero-stat strong {
+        display: block;
+        font-size: 1.2rem;
+    }
+
+    .hero-visual {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-image-card {
+        width: min(100%, 420px);
+        padding: 1rem;
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(234, 245, 238, 0.92));
+        box-shadow: 0 20px 44px rgba(21, 47, 31, 0.16);
+    }
+
+    .hero-image-card img {
+        width: 100%;
+        height: 450px;
+        object-fit: cover;
+        border-radius: 22px;
+        display: block;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        font-size: 1.9rem;
+        font-weight: 800;
+    }
+
+    .section-header p {
+        margin: 0.4rem 0 0;
+        color: var(--text-muted);
+    }
+
+    .table-shell {
+        padding: 1rem;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 18px 42px rgba(21, 47, 31, 0.08);
+        overflow: hidden;
+    }
+
+    .table-shell .table {
+        margin-bottom: 0;
+    }
+
+    .table-shell thead th {
+        background: #182a1f;
+        color: #fff;
+        border: none;
+        padding: 1rem;
+    }
+
+    .table-shell tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-color: rgba(21, 47, 31, 0.06);
+    }
+
+    .book-title {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .book-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.42rem 0.75rem;
+        border-radius: 999px;
+        background: #e3f2fd;
+        color: #0b5ed7;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .btn-soft-info,
+    .btn-soft-danger {
+        border: none;
+        border-radius: 999px;
+        padding: 0.48rem 0.92rem;
+        font-weight: 700;
+    }
+
+    .btn-soft-info {
+        background: #dff1fb;
+        color: #0b6e99;
+    }
+
+    .btn-soft-danger {
+        background: #fde5e5;
+        color: #b02a37;
+    }
+
+    .empty-box {
+        text-align: center;
+        padding: 3rem 2rem;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 18px 42px rgba(21, 47, 31, 0.08);
+    }
+
+    .pagination .page-link {
+        border: none;
+        border-radius: 999px;
+        margin: 0 0.2rem;
+        color: var(--accent-dark);
+        box-shadow: 0 10px 22px rgba(21, 47, 31, 0.08);
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--accent);
+        color: #fff;
+    }
+
+    @media (max-width: 991px) {
+        .hero-books {
+            grid-template-columns: 1fr;
+            padding: 2rem;
+        }
+
+        .hero-image-card img {
+            height: 330px;
+        }
+    }
+</style>
+
+<div class="landing-stack">
+    <section class="hero-books">
+        <div class="hero-copy">
+            <span class="hero-chip">Biblioteca moderna</span>
+            <h1>Encuentra el libro que estas buscando facilmente</h1>
+            <p>
+                Explora el catalogo, revisa disponibilidad y accede a cada libro desde una interfaz mas clara,
+                limpia y agradable para trabajar.
+            </p>
+
+            <form method="get" class="hero-search">
+                <input type="text" name="q" placeholder="Buscar por titulo, autor o ISBN">
+                <button type="submit">Buscar</button>
+            </form>
+
+            <div class="hero-meta">
+                <div class="hero-stat">
+                    <strong>{{ libros|length }}</strong>
+                    <span>Libros visibles</span>
+                </div>
+                <div class="hero-stat">
+                    <strong>Rapido</strong>
+                    <span>Consulta, crea y administra</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-image-card">
+                <img src="/public/logo.jpeg" alt="Libros en portada">
+            </div>
+        </div>
+    </section>
+
+    <div class="section-header">
+        <div>
+            <h2>Libros registrados</h2>
+            <p>Gestiona tu coleccion sin perder la funcionalidad que ya existe.</p>
+        </div>
+        <a href="{% url 'libro-create' %}" class="btn btn-accent">Crear libro</a>
     </div>
-    <div class="col-md-4 text-end">
-        <a href="{% url 'libro-create' %}" class="btn btn-primary btn-lg">
-            <i class="bi bi-plus"></i> Nuevo Libro
-        </a>
-    </div>
-</div>
 
-{% if libros %}
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>ISBN</th>
-                    <th>Cantidad</th>
-                    <th>Publicación</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for libro in libros %}
-                <tr>
-                    <td><strong>{{ libro.titulo }}</strong></td>
-                    <td>{{ libro.autor }}</td>
-                    <td>{{ libro.isbn }}</td>
-                    <td>{{ libro.cantidad }}</td>
-                    <td>{{ libro.fecha_publicacion|date:"d/m/Y" }}</td>
-                    <td>
-                        <a href="{% url 'libro-detail' libro.pk %}" class="btn btn-sm btn-info">👁️ Ver</a>
-                        <a href="{% url 'libro-delete' libro.pk %}" class="btn btn-sm btn-danger">🗑️ Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% if libros %}
+        <div class="table-shell">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Titulo</th>
+                            <th>Autor</th>
+                            <th>ISBN</th>
+                            <th>Cantidad</th>
+                            <th>Publicacion</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for libro in libros %}
+                        <tr>
+                            <td><span class="book-title">{{ libro.titulo }}</span></td>
+                            <td>{{ libro.autor }}</td>
+                            <td>{{ libro.isbn }}</td>
+                            <td><span class="book-tag">{{ libro.cantidad }} disponibles</span></td>
+                            <td>{{ libro.fecha_publicacion|date:"d/m/Y" }}</td>
+                            <td>
+                                <a href="{% url 'libro-detail' libro.pk %}" class="btn btn-sm btn-soft-info">Ver</a>
+                                <a href="{% url 'libro-delete' libro.pk %}" class="btn btn-sm btn-soft-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <!-- Paginación -->
-    {% if is_paginated %}
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1">Primera</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-                </li>
-            {% endif %}
+        {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">Primera</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    </li>
+                {% endif %}
 
-            <li class="page-item active">
-                <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-            </li>
+                <li class="page-item active">
+                    <span class="page-link">Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                </li>
 
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Ultima</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <div class="empty-box">
+            <h3 class="mb-3">No hay libros registrados</h3>
+            <p class="text-muted mb-4">Comienza creando el primer libro de tu catalogo.</p>
+            <a href="{% url 'libro-create' %}" class="btn btn-accent">Crear el primer libro</a>
+        </div>
     {% endif %}
-{% else %}
-    <div class="alert alert-info" role="alert">
-        <strong>No hay libros registrados.</strong> <a href="{% url 'libro-create' %}">Crear el primer libro</a>
-    </div>
-{% endif %}
+</div>
 {% endblock %}
