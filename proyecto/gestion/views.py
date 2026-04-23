@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Libro
 from .forms import LibroForm
@@ -19,13 +19,6 @@ class LibroDetailView(DetailView):
 
 # Crear un nuevo libro
 class LibroCreateView(CreateView):
-    model = Libro
-    form_class = LibroForm
-    template_name = 'gestion/libro_form.html'
-    success_url = reverse_lazy('libro-list')
-
-# Actualizar un libro
-class LibroUpdateView(UpdateView):
     model = Libro
     form_class = LibroForm
     template_name = 'gestion/libro_form.html'
