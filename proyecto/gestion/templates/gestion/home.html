@@ -217,17 +217,31 @@
         </article>
 
         <article class="feature-card">
-            <a href="{% url 'actualizar_libro' 1 %}">
+            {% if primer_libro %}
+            <a href="{% url 'actualizar_libro' primer_libro.pk %}">
                 <h3>Actualizar libro</h3>
                 <p>Accede a la vista de actualizacion para editar un registro existente.</p>
             </a>
+            {% else %}
+            <div>
+                <h3>Actualizar libro</h3>
+                <p>Primero crea un libro para poder editar un registro existente.</p>
+            </div>
+            {% endif %}
         </article>
 
         <article class="feature-card">
-            <a href="{% url 'eliminar_libro' 1 %}">
+            {% if primer_libro %}
+            <a href="{% url 'eliminar_libro' primer_libro.pk %}">
                 <h3>Eliminar libro</h3>
                 <p>Prueba la confirmacion de eliminacion sin mostrar detalles tecnicos en el inicio.</p>
             </a>
+            {% else %}
+            <div>
+                <h3>Eliminar libro</h3>
+                <p>Primero crea un libro para poder probar la confirmacion de eliminacion.</p>
+            </div>
+            {% endif %}
         </article>
     </section>
 

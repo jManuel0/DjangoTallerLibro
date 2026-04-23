@@ -314,6 +314,7 @@
                             <td>{{ libro.fecha_publicacion|date:"d/m/Y" }}</td>
                             <td>
                                 <a href="{% url 'libro-detail' libro.pk %}" class="btn btn-sm btn-soft-info">Ver</a>
+                                <a href="{% url 'actualizar_libro' libro.pk %}" class="btn btn-sm btn-accent">Actualizar</a>
                                 <a href="{% url 'libro-delete' libro.pk %}" class="btn btn-sm btn-soft-danger">Eliminar</a>
                             </td>
                         </tr>

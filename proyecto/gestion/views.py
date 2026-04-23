@@ -8,7 +8,8 @@ from .models import Libro
 
 
 def home(request):
-    return render(request, 'gestion/home.html')
+    primer_libro = Libro.objects.order_by('id').first()
+    return render(request, 'gestion/home.html', {'primer_libro': primer_libro})
 
 
 def libro_create(request):
